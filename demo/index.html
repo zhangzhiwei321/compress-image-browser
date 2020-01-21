@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>压缩图片</title>
+    <script src="/demo/vue.js"></script>
+    <script>
+        window.onload = function () {
+            new Vue({
+                el: '#app',
+                data: {
+                    imgUrl: {
+                        url: 'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3209370120,2008812818&fm=26&gp=0.jpg',
+                        compressUrl: '',
+                        compressFile: '',
+                    },
+                    imgFile: {
+                        file: '',
+                        compressFile: '',
+                        url: '',
+                        compressUrl: ''
+                    }
+                },
+                created() {
+                    console.log(CompressImg, "===")
+                },
+                methods: {
+                    compressForUrl() {
+                        new CompressImg().compress({ src: this.imgUrl.url }).then(res => {
+                            console.log(res)
+                            this.imgUrl.compressUrl = res.url
+                            this.imgUrl.compressFile = res.file
+                        }).catch(err => {
+                            console.log(err)
+                        })
+                    },
+                    compressForFile() {
+                        new CompressImg().compress({ file: this.imgFile.file }).then(res => {
+                            console.log(res)
+                            this.imgFile.compressFile = res.file
+                            this.imgFile.compressUrl = res.url
+                        }).catch(err => {
+                            console.log(err)
+                        })
+                    },
+                    chooseImg(e) {
+                        const file = e.target.files[0]
+                        this.imgFile.file = file
+                        this.imgFile.url = new CompressImg().createUrl(file)
+                    }
+                },
+            })
+        }
+    </script>
+    <style>
+        .img-box {
+            display: flex;
+        }
+
+        .img-box img {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='app'>
+        <div>
+            <label for="">请输入图片地址： <input type="text"
+                    v-model="imgUrl.url">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button @click='compressForUrl'>压缩</button></label>
+            <div class="img-box">
+                <div>
+                    <h3>原图：</h3>
+                    <img :src="imgUrl.url" alt="">
+                </div>
+                <div>
+                    <h3>压缩后：</h3>
+                    <img :src="imgUrl.compressUrl" alt="">
+                </div>
+            </div>
+        </div>
+        <div>
+            <label for="">请选择图片：<input type="file" name="" id="" accept="image/*"
+                    @change="chooseImg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button @click='compressForFile'>压缩</button></label>
+            <div class="img-box">
+                <div>
+                    <h3>原图：</h3>
+                    <img :src="imgFile.url" alt="">
+                </div>
+                <div>
+                    <h3>压缩后：</h3>
+                    <img :src="imgFile.compressUrl" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
